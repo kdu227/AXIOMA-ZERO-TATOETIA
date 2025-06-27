@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>AXIOMA ZERO - Jogo Ético</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0f1c2e;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      background: #1c2a40;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .hidden { display: none; }
+    select, input, button {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    h1 { color: #00aced; }
+    label { font-weight: bold; display: block; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AXIOMA ZERO - Jogo Ético</h1>
+
+    <div id="inicio">
+      <label>Quantos jogadores? (2-4)</label>
+      <input type="number" id="qtdJogadores" min="2" max="4" />
+      
+      <label>Quantas rodadas? (1-10)</label>
+      <input type="number" id="qtdRodadas" min="1" max="10" value="5" />
+      
+      <button onclick="comecarJogo()">Começar</button>
+    </div>
+
+    <div id="cadastroJogadores" class="hidden"></div>
+
+    <div id="jogo" class="hidden">
+      <div id="selecionarCasa"></div>
+      <div id="selecionarTemaSituacaoAcao"></div>
+    </div>
+
+    <div id="resumo" class="hidden"></div>
+  </div>
+
+  <script>
+    const temas = [
+      "ética moral",
+      "assédio sexual",
+      "racismo",
+      "acessibilidade",
+      "desigualdade de gênero"
+    ];
+
+    const situacoes = {
+      "ética moral": [
+        `O chefe expõe erros do funcionário na frente de<br> colegas de forma agressiva, com palavras ofensivas e<br> sarcásticas, repentinamente.`,
+        `O colaborador é excluído de reuniões, e-mails e<br> eventos da empresa sem justificativa, como forma de<br> punição velada ou retaliação.`
+      ],
+      "assédio sexual": [
+        `Um superior ou colega de trabalho insiste em convidar<br> para sair, mesmo já tendo deixado evidente não estar<br> interessado. A partir daí surgem determinadas<br> chantagens e promessas para melhoria no cargo.`
+      ],
+      "racismo": [
+        `Pessoas negras recebem menos reconhecimento ou são<br> ignoradas em promoções.`,
+        `Pessoas negras são vistas como “Menos capazes” ou<br> precisam provar suas habilidades.`
+      ],
+      "acessibilidade": [
+        `Fazer piadas ou imitações da forma de andar, falar ou <br> enxergar.`
+      ],
+      "desigualdade de gênero": [
+        `Falas que ridicularizam orientação sexual ou identidade <br> de gênero, mesmo disfarçadas de “brincadeira”.`,
+        `Pessoas LGBTQI+ sendo preteridas para cargos de<br> liderança ou funções de destaque.`
+      ]
+    };
+
+    const acoesPorSituacao = {
+      "ética moral": [
+        [
+          `a) Juntar-me a ele pois ele é o chefe e devo apoiá-lo<br> eticamente.`,
+          `b) Ser imparcial para não gerar dúvidas e me prejudicar<br> na doutrina ética da empresa.`,
+          `c) Defender meu colega de trabalho e sua conduta de<br> acordo com a ética moral.`
+        ],
+        [
+          `a) Não devo me importar pois é punição da empresa e<br> não me prejudica nem o meu setor.`,
+          `b) Devo levar para supervisores a forma com que estão<br> punindo os colaboradores.`,
+          `c) Devo apoiar as punições para que eu não seja punido,<br> afinal não quero me queimar na empresa.`
+        ]
+      ],
+      "assédio sexual": [
+        [
+          `a) Aceitar sair para obter vantagens na empresa, afinal<br> ninguém irá descobrir.`,
+          `b) Ficar apenas ignorando e deixar com que pare por si<br> só.`,
+          `c) Levar para supervisão ou autoridades para que<br> determinem a punição e verifiquem o caso.`
+        ]
+      ],
+      "racismo": [
+        [
+          `a) Hoje em dia as pessoas no geral independente de sua<br> raça ou cor não tem o reconhecimento que merecem.`,
+          `b) Acontece na grande maioria das empresas e me impor<br> não mudaria isso.`,
+          `c) Claro evidente que isso acontece com frequência, mas<br> não tem meu apoio.`
+        ],
+        [
+          `a) Acho viável pois pessoas assim não tem tanta<br> acessibilidade aos estudos.`,
+          `b) Deveriam fazer greve e movimentações para impor<br> respeito.`,
+          `c) Algo que devem lutar todos os dias demonstrando<br> tamanha capacidade, habilidade e igualdade.`
+        ]
+      ],
+      "acessibilidade": [
+        [
+          `a) Não participar, mas dar risadas quando fazem.`,
+          `b) Prefiro não ter nenhum vínculo, nem fazendo e nem<br> ajudando.`,
+          `c) Se a pessoa não sabe então não faz mal algum.`
+        ]
+      ],
+      "desigualdade de gênero": [
+        [
+          `a) Não entendo do assunto então não opinaria.`,
+          `b) Começaria uma discussão para defender, pois somos<br> todos seres humanos.`,
+          `c) Não participaria dessa “brincadeira” e nem permitiria<br> perto de mim.`
+        ],
+        [
+          `a) Devo apoiar pois assim gera menos competições para<br> os cargos desejados.`,
+          `b) Ser imparcial pois não faço parte dessa comunidade e<br> não me afetaria.`,
+          `c) Devo ver maneiras de demonstrar igualdade e inclusão<br> no ambiente de trabalho.`
+        ]
+      ]
+    };
+
+    let jogadores = [];
+    let historico = [];
+    let rodadaAtual = 0;
+    let jogadorAtual = 0;
+    let maxRodadas = 5;
+    let casaSelecionada = null;
+    let temaAtual = null;
+
+    function comecarJogo() {
+      const qtd = parseInt(document.getElementById("qtdJogadores").value);
+      const rodadas = parseInt(document.getElementById("qtdRodadas").value);
+      if (!(qtd >= 2 && qtd <= 4) || !(rodadas >= 1 && rodadas <= 10)) {
+        alert("Valores inválidos.");
+        return;
+      }
+      maxRodadas = rodadas;
+      let form = '<h2>Nome dos jogadores:</h2>';
+      for (let i = 0; i < qtd; i++) {
+        form += `<input type="text" id="jogador${i}" placeholder="Jogador ${i + 1}"><br>`;
+      }
+      form += '<button onclick="iniciarRodadas()">Iniciar Rodadas</button>';
+      document.getElementById("inicio").classList.add("hidden");
+      document.getElementById("cadastroJogadores").classList.remove("hidden");
+      document.getElementById("cadastroJogadores").innerHTML = form;
+    }
+
+    function iniciarRodadas() {
+      jogadores = [];
+      const qtd = parseInt(document.getElementById("qtdJogadores").value);
+      for (let i = 0; i < qtd; i++) {
+        const nome = document.getElementById(`jogador${i}`).value.trim();
+        if (nome) jogadores.push(nome);
+      }
+      if (jogadores.length < qtd) {
+        alert("Preencha todos os nomes");
+        return;
+      }
+      document.getElementById("cadastroJogadores").classList.add("hidden");
+      rodadaAtual = 0;
+      jogadorAtual = 0;
+      proximaJogada();
+    }
+
+    function proximaJogada() {
+      casaSelecionada = null;
+      temaAtual = null;
+
+      document.getElementById("jogo").classList.remove("hidden");
+      document.getElementById("selecionarTemaSituacaoAcao").innerHTML = "";
+      document.getElementById("selecionarCasa").innerHTML = `
+        <h2>Rodada ${rodadaAtual + 1} - ${jogadores[jogadorAtual]}</h2>
+        <label>Mestre: selecione a casa do jogador:</label>
+        <select id="casaSelecionada">
+          <option disabled selected>Escolha a casa</option>
+          <option value="1">Casa 1</option>
+          <option value="2">Casa 2</option>
+          <option value="3">Casa 3</option>
+          <option value="4">Casa 4</option>
+          <option value="5">Casa 5</option>
+          <option value="6">Casa 6</option>
+          <option value="7">Casa 7</option>
+          <option value="8">Casa 8</option>
+          <option value="9">Casa 9</option>
+          <option value="10">Casa 10</option>
+        </select>
+        <br><br>
+        <button onclick="confirmarCasa()">Confirmar Casa</button>
+      `;
+    }
+
+    function confirmarCasa() {
+      const selectCasa = document.getElementById("casaSelecionada");
+      if (!selectCasa.value) {
+        alert("Selecione uma casa!");
+        return;
+      }
+      casaSelecionada = selectCasa.value;
+
+      // Escolhe tema aleatório
+      temaAtual = temas[Math.floor(Math.random() * temas.length)];
+
+      mostrarSituacoesTema(temaAtual);
+    }
+
+    function mostrarSituacoesTema(tema) {
+      const div = document.getElementById("selecionarCasa");
+      div.innerHTML = "";
+
+      const situacoesTema = situacoes[tema];
+      let optionsSit = `<option disabled selected>Selecione a situação na carta</option>`;
+      situacoesTema.forEach((sit, idx) => {
+        optionsSit += `<option value="${idx}">${sit}</option>`;
+      });
+
+      document.getElementById("selecionarTemaSituacaoAcao").innerHTML = `
+        <label><strong>Mestre:</strong> tema sorteado: <em>${tema}</em></label><br>
+        <label><strong>Mestre:</strong> selecione a situação da carta:</label>
+        <select id="situacaoSelecionada" onchange="mostrarOpcoesAcao('${tema}')">
+          ${optionsSit}
+        </select>
+        <div id="acoesContainer"></div>
+      `;
+    }
+
+    function mostrarOpcoesAcao(tema) {
+      const selectSit = document.getElementById("situacaoSelecionada");
+      if (selectSit.value === "") return;
+
+      const situacaoIndex = parseInt(selectSit.value);
+      const opcoes = acoesPorSituacao[tema][situacaoIndex];
+
+      let html = '<label><strong>Mestre:</strong> selecione a ação do jogador:</label><select id="acaoSelecionada"><option disabled selected>Escolha a ação</option>';
+      opcoes.forEach(opcao => {
+        html += `<option value="${opcao}">${opcao}</option>`;
+      });
+      html += '</select><br><br><button onclick="confirmarJogada()">Confirmar Jogada</button>';
+
+      document.getElementById("acoesContainer").innerHTML = html;
+    }
+
+    function confirmarJogada() {
+      const selectTema = temaAtual;
+      const selectSit = document.getElementById("situacaoSelecionada");
+      const selectAcao = document.getElementById("acaoSelecionada");
+
+      if (!selectSit || selectSit.value === "") {
+        alert("Selecione a situação.");
+        return;
+      }
+      if (!selectAcao || selectAcao.value === "") {
+        alert("Selecione a ação.");
+        return;
+      }
+
+      historico.push({
+        jogador: jogadores[jogadorAtual],
+        rodada: rodadaAtual + 1,
+        casa: casaSelecionada,
+        tema: selectTema,
+        situacao: situacoes[selectTema][parseInt(selectSit.value)],
+        acao: selectAcao.value
+      });
+
+      // Próximo jogador / rodada
+      jogadorAtual++;
+      if (jogadorAtual >= jogadores.length) {
+        jogadorAtual = 0;
+        rodadaAtual++;
+      }
+
+      if (rodadaAtual >= maxRodadas) {
+        mostrarResumo();
+      } else {
+        proximaJogada();
+      }
+    }
+
+    function mostrarResumo() {
+      document.getElementById("jogo").classList.add("hidden");
+      const div = document.getElementById("resumo");
+      div.classList.remove("hidden");
+
+      let resumoHtml = `<h2>Resumo das Jogadas</h2>`;
+      historico.forEach(j => {
+        resumoHtml += `
+          <p><strong>${j.jogador}</strong> (Rodada ${j.rodada}, Casa ${j.casa})<br>
+          Tema: <em>${j.tema}</em><br>
+          Situação: ${j.situacao}<br>
+          Ação escolhida: ${j.acao}</p><hr>`;
+      });
+
+      resumoHtml += `<button onclick="reiniciarJogo()">Reiniciar Jogo</button>`;
+
+      div.innerHTML = resumoHtml;
+    }
+
+    function reiniciarJogo() {
+      jogadores = [];
+      historico = [];
+      rodadaAtual = 0;
+      jogadorAtual = 0;
+      casaSelecionada = null;
+      temaAtual = null;
+
+      document.getElementById("resumo").classList.add("hidden");
+      document.getElementById("inicio").classList.remove("hidden");
+      document.getElementById("qtdJogadores").value = "";
+      document.getElementById("qtdRodadas").value = "5";
+      document.getElementById("cadastroJogadores").innerHTML = "";
+      document.getElementById("jogo").classList.add("hidden");
+      document.getElementById("selecionarCasa").innerHTML = "";
+      document.getElementById("selecionarTemaSituacaoAcao").innerHTML = "";
+    }
+  </script>
+</body>
+</html>
