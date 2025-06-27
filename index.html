@@ -28,123 +28,71 @@
       box-sizing: border-box;
     }
     h1 { color: #00aced; }
-    label { font-weight: bold; display: block; margin-top: 15px; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>AXIOMA ZERO - Jogo Ético</h1>
-
     <div id="inicio">
-      <label>Quantos jogadores? (2-4)</label>
-      <input type="number" id="qtdJogadores" min="2" max="4" />
-      
-      <label>Quantas rodadas? (1-10)</label>
-      <input type="number" id="qtdRodadas" min="1" max="10" value="5" />
-      
+      <label>Quantos jogadores? (2-4)</label><br />
+      <input type="number" id="qtdJogadores" min="2" max="4" /><br />
+      <label>Quantas rodadas? (1-10)</label><br />
+      <input type="number" id="qtdRodadas" min="1" max="10" value="5" /><br />
       <button onclick="comecarJogo()">Começar</button>
     </div>
 
     <div id="cadastroJogadores" class="hidden"></div>
-
-    <div id="jogo" class="hidden">
-      <div id="selecionarCasa"></div>
-      <div id="selecionarTemaSituacaoAcao"></div>
-    </div>
-
+    <div id="jogo" class="hidden"></div>
     <div id="resumo" class="hidden"></div>
   </div>
 
   <script>
     const temas = [
-      "ética moral",
       "assédio sexual",
+      "assédio moral",
       "racismo",
-      "acessibilidade",
-      "desigualdade de gênero"
+      "desigualdade de gênero",
+      "acessibilidade"
     ];
 
     const situacoes = {
-      "ética moral": [
-        `O chefe expõe erros do funcionário na frente de<br> colegas de forma agressiva, com palavras ofensivas e<br> sarcásticas, repentinamente.`,
-        `O colaborador é excluído de reuniões, e-mails e<br> eventos da empresa sem justificativa, como forma de<br> punição velada ou retaliação.`
-      ],
       "assédio sexual": [
-        `Um superior ou colega de trabalho insiste em convidar<br> para sair, mesmo já tendo deixado evidente não estar<br> interessado. A partir daí surgem determinadas<br> chantagens e promessas para melhoria no cargo.`
+        "Um superior ou colega insiste em convidar para sair, mesmo já tendo deixado claro que não está interessado.",
+        "Elogios inapropriados no ambiente de trabalho."
+      ],
+      "assédio moral": [
+        "Humilhações frequentes em público.",
+        "Isolamento intencional de um funcionário."
       ],
       "racismo": [
-        `Pessoas negras recebem menos reconhecimento ou são<br> ignoradas em promoções.`,
-        `Pessoas negras são vistas como “Menos capazes” ou<br> precisam provar suas habilidades.`
-      ],
-      "acessibilidade": [
-        `Fazer piadas ou imitações da forma de andar, falar ou <br> enxergar.`
+        "Pessoas negras recebem menos reconhecimento ou são ignoradas em promoções.",
+        "Pessoas negras são vistas como “menos capazes” e precisam provar suas habilidades."
       ],
       "desigualdade de gênero": [
-        `Falas que ridicularizam orientação sexual ou identidade <br> de gênero, mesmo disfarçadas de “brincadeira”.`,
-        `Pessoas LGBTQI+ sendo preteridas para cargos de<br> liderança ou funções de destaque.`
+        "Falas que ridicularizam orientação sexual ou identidade de gênero, mesmo disfarçadas de 'brincadeira'.",
+        "Pessoas LGBTQI+ sendo preteridas para cargos de liderança ou funções de destaque."
+      ],
+      "acessibilidade": [
+        "Fazer piadas ou imitações da forma de andar, falar ou enxergar.",
+        "Falta de intérprete para surdos."
       ]
     };
 
-    const acoesPorSituacao = {
-      "ética moral": [
-        [
-          `a) Juntar-me a ele pois ele é o chefe e devo apoiá-lo<br> eticamente.`,
-          `b) Ser imparcial para não gerar dúvidas e me prejudicar<br> na doutrina ética da empresa.`,
-          `c) Defender meu colega de trabalho e sua conduta de<br> acordo com a ética moral.`
-        ],
-        [
-          `a) Não devo me importar pois é punição da empresa e<br> não me prejudica nem o meu setor.`,
-          `b) Devo levar para supervisores a forma com que estão<br> punindo os colaboradores.`,
-          `c) Devo apoiar as punições para que eu não seja punido,<br> afinal não quero me queimar na empresa.`
-        ]
-      ],
-      "assédio sexual": [
-        [
-          `a) Aceitar sair para obter vantagens na empresa, afinal<br> ninguém irá descobrir.`,
-          `b) Ficar apenas ignorando e deixar com que pare por si<br> só.`,
-          `c) Levar para supervisão ou autoridades para que<br> determinem a punição e verifiquem o caso.`
-        ]
-      ],
-      "racismo": [
-        [
-          `a) Hoje em dia as pessoas no geral independente de sua<br> raça ou cor não tem o reconhecimento que merecem.`,
-          `b) Acontece na grande maioria das empresas e me impor<br> não mudaria isso.`,
-          `c) Claro evidente que isso acontece com frequência, mas<br> não tem meu apoio.`
-        ],
-        [
-          `a) Acho viável pois pessoas assim não tem tanta<br> acessibilidade aos estudos.`,
-          `b) Deveriam fazer greve e movimentações para impor<br> respeito.`,
-          `c) Algo que devem lutar todos os dias demonstrando<br> tamanha capacidade, habilidade e igualdade.`
-        ]
-      ],
-      "acessibilidade": [
-        [
-          `a) Não participar, mas dar risadas quando fazem.`,
-          `b) Prefiro não ter nenhum vínculo, nem fazendo e nem<br> ajudando.`,
-          `c) Se a pessoa não sabe então não faz mal algum.`
-        ]
-      ],
-      "desigualdade de gênero": [
-        [
-          `a) Não entendo do assunto então não opinaria.`,
-          `b) Começaria uma discussão para defender, pois somos<br> todos seres humanos.`,
-          `c) Não participaria dessa “brincadeira” e nem permitiria<br> perto de mim.`
-        ],
-        [
-          `a) Devo apoiar pois assim gera menos competições para<br> os cargos desejados.`,
-          `b) Ser imparcial pois não faço parte dessa comunidade e<br> não me afetaria.`,
-          `c) Devo ver maneiras de demonstrar igualdade e inclusão<br> no ambiente de trabalho.`
-        ]
-      ]
-    };
+    const acoes = [
+      "a) Aceitar sair para obter vantagens na empresa, afinal ninguém irá descobrir.",
+      "b) Ficar apenas ignorando e deixar com que pare por si só.",
+      "c) Levar para supervisão ou autoridades para que verifiquem o caso."
+    ];
 
     let jogadores = [];
+    let casasJogadores = [];
     let historico = [];
     let rodadaAtual = 0;
     let jogadorAtual = 0;
     let maxRodadas = 5;
-    let casaSelecionada = null;
-    let temaAtual = null;
+
+    // Casas que fazem o jogador perder a vez
+    const casasPerdeVez = [3, 7, 11, 15, 19];
 
     function comecarJogo() {
       const qtd = parseInt(document.getElementById("qtdJogadores").value);
@@ -154,7 +102,7 @@
         return;
       }
       maxRodadas = rodadas;
-      let form = '<h2>Nome dos jogadores:</h2>';
+      let form = "<h2>Nome dos jogadores:</h2>";
       for (let i = 0; i < qtd; i++) {
         form += `<input type="text" id="jogador${i}" placeholder="Jogador ${i + 1}"><br>`;
       }
@@ -166,6 +114,7 @@
 
     function iniciarRodadas() {
       jogadores = [];
+      casasJogadores = [];
       const qtd = parseInt(document.getElementById("qtdJogadores").value);
       for (let i = 0; i < qtd; i++) {
         const nome = document.getElementById(`jogador${i}`).value.trim();
@@ -175,6 +124,8 @@
         alert("Preencha todos os nomes");
         return;
       }
+      // Inicializa casas dos jogadores na casa 0
+      casasJogadores = jogadores.map(() => 0);
       document.getElementById("cadastroJogadores").classList.add("hidden");
       rodadaAtual = 0;
       jogadorAtual = 0;
@@ -182,112 +133,113 @@
     }
 
     function proximaJogada() {
-      casaSelecionada = null;
-      temaAtual = null;
+      const div = document.getElementById("jogo");
+      div.classList.remove("hidden");
+      div.innerHTML = `<h2>Rodada ${rodadaAtual + 1} - ${jogadores[jogadorAtual]}</h2>`;
 
-      document.getElementById("jogo").classList.remove("hidden");
-      document.getElementById("selecionarTemaSituacaoAcao").innerHTML = "";
-      document.getElementById("selecionarCasa").innerHTML = `
-        <h2>Rodada ${rodadaAtual + 1} - ${jogadores[jogadorAtual]}</h2>
-        <label>Mestre: selecione a casa do jogador:</label>
+      // Seleção da casa pelo mestre para o jogador atual
+      const casaAtual = casasJogadores[jogadorAtual];
+      let opcoesCasa = "";
+      // Gera opções de casa para o mestre escolher, de casaAtual+1 até casaAtual+3 (exemplo)
+      for (let c = casaAtual + 1; c <= casaAtual + 3 && c <= 20; c++) {
+        opcoesCasa += `<option value="${c}">${c}</option>`;
+      }
+
+      div.innerHTML += `
+        <label><strong>Mestre:</strong> selecione a casa onde o jogador está:</label><br>
         <select id="casaSelecionada">
-          <option disabled selected>Escolha a casa</option>
-          <option value="1">Casa 1</option>
-          <option value="2">Casa 2</option>
-          <option value="3">Casa 3</option>
-          <option value="4">Casa 4</option>
-          <option value="5">Casa 5</option>
-          <option value="6">Casa 6</option>
-          <option value="7">Casa 7</option>
-          <option value="8">Casa 8</option>
-          <option value="9">Casa 9</option>
-          <option value="10">Casa 10</option>
-        </select>
-        <br><br>
+          <option disabled selected>Selecione a casa</option>
+          ${opcoesCasa}
+        </select><br><br>
         <button onclick="confirmarCasa()">Confirmar Casa</button>
+        <div id="situacaoEscolha" style="margin-top:20px;"></div>
       `;
     }
 
     function confirmarCasa() {
-      const selectCasa = document.getElementById("casaSelecionada");
-      if (!selectCasa.value) {
-        alert("Selecione uma casa!");
+      const casa = parseInt(document.getElementById("casaSelecionada").value);
+      if (isNaN(casa) || casa <= casasJogadores[jogadorAtual]) {
+        alert("Por favor, selecione uma casa válida maior que a atual.");
         return;
       }
-      casaSelecionada = selectCasa.value;
+      casasJogadores[jogadorAtual] = casa;
 
-      // Escolhe tema aleatório
-      temaAtual = temas[Math.floor(Math.random() * temas.length)];
+      if (casasPerdeVez.includes(casa)) {
+        alert(`${jogadores[jogadorAtual]} caiu na casa ${casa} e perdeu a vez!`);
+        avancarJogador();
+        return;
+      }
 
-      mostrarSituacoesTema(temaAtual);
+      // Casa não faz perder a vez, seleciona tema aleatório
+      const temaAleatorio = temas[Math.floor(Math.random() * temas.length)];
+      mostrarEscolhaSituacao(temaAleatorio);
     }
 
-    function mostrarSituacoesTema(tema) {
-      const div = document.getElementById("selecionarCasa");
-      div.innerHTML = "";
-
-      const situacoesTema = situacoes[tema];
-      let optionsSit = `<option disabled selected>Selecione a situação na carta</option>`;
-      situacoesTema.forEach((sit, idx) => {
-        optionsSit += `<option value="${idx}">${sit}</option>`;
+    function mostrarEscolhaSituacao(tema) {
+      const div = document.getElementById("situacaoEscolha");
+      let opcoesSituacao = "";
+      situacoes[tema].forEach((s, idx) => {
+        // Quebra o texto para ficar mais legível, sem mudar palavras
+        const textoQuebrado = quebraTexto(s, 40);
+        opcoesSituacao += `<option value="${idx}">${textoQuebrado}</option>`;
       });
 
-      document.getElementById("selecionarTemaSituacaoAcao").innerHTML = `
-        <label><strong>Mestre:</strong> tema sorteado: <em>${tema}</em></label><br>
-        <label><strong>Mestre:</strong> selecione a situação da carta:</label>
-        <select id="situacaoSelecionada" onchange="mostrarOpcoesAcao('${tema}')">
-          ${optionsSit}
-        </select>
-        <div id="acoesContainer"></div>
+      // As opções de ação que o jogador pode tomar — ajustando para temas específicos se quiser
+      let opcoesAcoes = "";
+      acoes.forEach(a => {
+        const textoQuebrado = quebraTexto(a, 50);
+        opcoesAcoes += `<option value="${a}">${textoQuebrado}</option>`;
+      });
+
+      div.innerHTML = `
+        <p><strong>Mestre:</strong> Tema sorteado: <em>${tema}</em></p>
+        <p><strong>Mestre:</strong> Selecione a situação da carta:</p>
+        <select id="situacaoSelecionada">
+          <option disabled selected>Selecione a situação</option>
+          ${opcoesSituacao}
+        </select><br><br>
+        <p><strong>Mestre:</strong> Selecione a ação do jogador:</p>
+        <select id="acaoSelecionada">
+          <option disabled selected>Selecione a ação</option>
+          ${opcoesAcoes}
+        </select><br><br>
+        <button onclick="confirmarJogada()">Confirmar Jogada</button>
       `;
     }
 
-    function mostrarOpcoesAcao(tema) {
-      const selectSit = document.getElementById("situacaoSelecionada");
-      if (selectSit.value === "") return;
-
-      const situacaoIndex = parseInt(selectSit.value);
-      const opcoes = acoesPorSituacao[tema][situacaoIndex];
-
-      let html = '<label><strong>Mestre:</strong> selecione a ação do jogador:</label><select id="acaoSelecionada"><option disabled selected>Escolha a ação</option>';
-      opcoes.forEach(opcao => {
-        html += `<option value="${opcao}">${opcao}</option>`;
-      });
-      html += '</select><br><br><button onclick="confirmarJogada()">Confirmar Jogada</button>';
-
-      document.getElementById("acoesContainer").innerHTML = html;
-    }
-
     function confirmarJogada() {
-      const selectTema = temaAtual;
-      const selectSit = document.getElementById("situacaoSelecionada");
-      const selectAcao = document.getElementById("acaoSelecionada");
+      const tema = document.getElementById("temaSelecionado")?.value || null;
+      const situacaoIdx = document.getElementById("situacaoSelecionada").value;
+      const acao = document.getElementById("acaoSelecionada").value;
 
-      if (!selectSit || selectSit.value === "") {
-        alert("Selecione a situação.");
+      // Para garantir pegamos o tema do texto mostrado no div situacaoEscolha (pegamos o tema do parágrafo)
+      const divSituacao = document.getElementById("situacaoEscolha");
+      const temaTexto = divSituacao.querySelector("p em")?.textContent || null;
+
+      if (!temaTexto || situacaoIdx === undefined || !acao) {
+        alert("Por favor, selecione situação e ação.");
         return;
       }
-      if (!selectAcao || selectAcao.value === "") {
-        alert("Selecione a ação.");
-        return;
-      }
+
+      const situacaoTexto = situacoes[temaTexto][situacaoIdx];
 
       historico.push({
         jogador: jogadores[jogadorAtual],
-        rodada: rodadaAtual + 1,
-        casa: casaSelecionada,
-        tema: selectTema,
-        situacao: situacoes[selectTema][parseInt(selectSit.value)],
-        acao: selectAcao.value
+        casa: casasJogadores[jogadorAtual],
+        tema: temaTexto,
+        situacao: situacaoTexto,
+        acao
       });
 
-      // Próximo jogador / rodada
+      avancarJogador();
+    }
+
+    function avancarJogador() {
       jogadorAtual++;
       if (jogadorAtual >= jogadores.length) {
         jogadorAtual = 0;
         rodadaAtual++;
       }
-
       if (rodadaAtual >= maxRodadas) {
         mostrarResumo();
       } else {
@@ -299,37 +251,48 @@
       document.getElementById("jogo").classList.add("hidden");
       const div = document.getElementById("resumo");
       div.classList.remove("hidden");
+      div.innerHTML = "<h2>Resumo Ético</h2><p>Gerando resumo final...</p>";
 
-      let resumoHtml = `<h2>Resumo das Jogadas</h2>`;
-      historico.forEach(j => {
-        resumoHtml += `
-          <p><strong>${j.jogador}</strong> (Rodada ${j.rodada}, Casa ${j.casa})<br>
-          Tema: <em>${j.tema}</em><br>
-          Situação: ${j.situacao}<br>
-          Ação escolhida: ${j.acao}</p><hr>`;
+      // Aqui você pode colocar chamada para API ou resumo simples local
+      // Para demo, vamos só mostrar o histórico
+      let texto = "";
+      historico.forEach(h => {
+        texto += `<b>${h.jogador}</b> - Casa ${h.casa} - Tema: ${h.tema}\nSituação: ${h.situacao}\nAção: ${h.acao}\n\n`;
       });
-
-      resumoHtml += `<button onclick="reiniciarJogo()">Reiniciar Jogo</button>`;
-
-      div.innerHTML = resumoHtml;
+      div.innerHTML = `
+        <h2>Resumo Final</h2>
+        <pre style="text-align:left; background:#1c2a40; padding:10px; border-radius:8px; color:#fff;">${texto}</pre>
+        <button onclick="reiniciarJogo()">Reiniciar</button>
+      `;
     }
 
     function reiniciarJogo() {
       jogadores = [];
+      casasJogadores = [];
       historico = [];
       rodadaAtual = 0;
       jogadorAtual = 0;
-      casaSelecionada = null;
-      temaAtual = null;
-
+      maxRodadas = 5;
       document.getElementById("resumo").classList.add("hidden");
       document.getElementById("inicio").classList.remove("hidden");
       document.getElementById("qtdJogadores").value = "";
       document.getElementById("qtdRodadas").value = "5";
-      document.getElementById("cadastroJogadores").innerHTML = "";
-      document.getElementById("jogo").classList.add("hidden");
-      document.getElementById("selecionarCasa").innerHTML = "";
-      document.getElementById("selecionarTemaSituacaoAcao").innerHTML = "";
+    }
+
+    // Função para quebrar texto em várias linhas sem cortar palavras (aproximadamente)
+    function quebraTexto(texto, maxChars) {
+      let result = "";
+      let linha = "";
+      texto.split(" ").forEach(palavra => {
+        if ((linha + palavra).length > maxChars) {
+          result += linha.trim() + "\n";
+          linha = palavra + " ";
+        } else {
+          linha += palavra + " ";
+        }
+      });
+      result += linha.trim();
+      return result;
     }
   </script>
 </body>
