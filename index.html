@@ -84,7 +84,6 @@
       "c) Levar para supervisão ou autoridades para que verifiquem o caso."
     ];
 
-    // Define o tabuleiro com casas normais e casas perde vez "?"
     const tabuleiroCasas = [
       { id: 1, nome: "Casa 1" },
       { id: 2, nome: "Casa 2" },
@@ -139,7 +138,7 @@
         alert("Preencha todos os nomes");
         return;
       }
-      casasJogadores = jogadores.map(() => 1); // Começam na casa 1
+      casasJogadores = jogadores.map(() => 1);
       document.getElementById("cadastroJogadores").classList.add("hidden");
       rodadaAtual = 0;
       jogadorAtual = 0;
@@ -151,12 +150,9 @@
       div.classList.remove("hidden");
       div.innerHTML = `<h2>Rodada ${rodadaAtual + 1} - ${jogadores[jogadorAtual]}</h2>`;
 
-      const casaAtual = casasJogadores[jogadorAtual];
-      // O mestre pode escolher a próxima casa que seja superior à atual, até casa 10 (ou intercalar casas ?)
-      // Para simplificar, o mestre pode escolher qualquer casa do tabuleiro que seja > casaAtual
       let opcoesCasa = "";
       tabuleiroCasas.forEach(casa => {
-        if (casa.id > casaAtual && casa.id <= 10) {
+        if (casa.id <= 10) {
           opcoesCasa += `<option value="${casa.id}">${casa.nome}</option>`;
         }
       });
@@ -178,10 +174,6 @@
         alert("Por favor, selecione uma casa válida.");
         return;
       }
-      if (casa <= casasJogadores[jogadorAtual]) {
-        alert("Selecione uma casa maior que a atual.");
-        return;
-      }
       casasJogadores[jogadorAtual] = casa;
 
       if (casasPerdeVez.includes(casa)) {
@@ -190,7 +182,6 @@
         return;
       }
 
-      // Casa normal: escolhe tema aleatório e mostra opções
       const temaAleatorio = temas[Math.floor(Math.random() * temas.length)];
       mostrarEscolhaSituacao(temaAleatorio);
     }
